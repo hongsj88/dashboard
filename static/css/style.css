@@ -1,0 +1,55 @@
+/* 커스텀 스타일 */
+.highcharts-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+.highcharts-legend-item text {
+    font-size: 0.9rem !important;
+}
+
+select {
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+select:hover {
+    border-color: #4F46E5;
+}
+
+select:focus {
+    outline: none;
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.container {
+    max-width: 1400px;
+}
+
+/* 차트 컨테이너 스타일 */
+.chart-container {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease;
+}
+
+.chart-container:hover {
+    transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .h-80 {
+        height: 300px;
+    }
+    
+    .h-96 {
+        height: 400px;
+    }
+} 

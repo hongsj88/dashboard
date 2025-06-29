@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Python FastAPI Project
+- Anaconda 가상환경에서 작업한다.
+
+- 최종적으로 프로젝트 폴더에서 uvicorn main:app --reload 명령어로 서버를 실행한다.
