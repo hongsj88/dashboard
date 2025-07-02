@@ -13,8 +13,13 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(debug=True)
 
-# 현재 파일의 디렉토리 경로
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Azure Web App의 기본 디렉토리
+AZURE_WEBAPP_DIR = os.getenv('HOME', '')
+if AZURE_WEBAPP_DIR:
+    BASE_DIR = os.path.join(AZURE_WEBAPP_DIR, 'site', 'wwwroot')
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 logger.debug(f"Base directory: {BASE_DIR}")
 
 # 정적 파일 및 템플릿 설정
@@ -28,11 +33,15 @@ if not os.path.exists(static_dir):
     logger.warning(f"Static directory does not exist: {static_dir}")
     os.makedirs(static_dir, exist_ok=True)
 
+if not os.path.exists(templates_dir):
+    logger.warning(f"Templates directory does not exist: {templates_dir}")
+    os.makedirs(templates_dir, exist_ok=True)
+
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=templates_dir)
 
 # JSON 데이터 로드
-json_path = os.path.join(static_dir, 'final_data.json')  # static 디렉토리 내의 JSON 파일
+json_path = os.path.join(static_dir, 'final_data.json')
 logger.debug(f"JSON file path: {json_path}")
 
 try:
@@ -46,7 +55,13 @@ except Exception as e:
 @app.get("/")
 async def home(request: Request):
     logger.debug("Rendering home page")
-    return templates.TemplateResponse("index.html", {"request": request})
+    try:
+        response = templates.TemplateResponse("index.html", {"request": request})
+        logger.debug("Template rendered successfully")
+        return response
+    except Exception as e:
+        logger.error(f"Error rendering template: {e}")
+        return {"error": str(e)}
 
 @app.get("/api/data")
 async def get_data():
