@@ -22,11 +22,16 @@ templates_dir = os.path.join(BASE_DIR, "templates")
 logger.debug(f"Static directory: {static_dir}")
 logger.debug(f"Templates directory: {templates_dir}")
 
+# 정적 파일 마운트 전에 디렉토리 존재 여부 확인
+if not os.path.exists(static_dir):
+    logger.warning(f"Static directory does not exist: {static_dir}")
+    os.makedirs(static_dir, exist_ok=True)
+
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=templates_dir)
 
 # JSON 데이터 로드
-json_path = os.path.join(BASE_DIR, 'final_data.json')
+json_path = os.path.join(static_dir, 'final_data.json')  # static 디렉토리 내의 JSON 파일
 logger.debug(f"JSON file path: {json_path}")
 
 try:
@@ -49,4 +54,6 @@ async def get_data():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    # Azure Web App은 PORT 환경 변수를 통해 포트를 지정합니다
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port) 
